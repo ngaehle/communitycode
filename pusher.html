@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Your Session</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link href="CSS/pusher-app.css" rel="stylesheet"></link>
     <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism-dark.min.css" rel="stylesheet" />-->
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
@@ -25,35 +26,68 @@
             </ul>
         </div>
     </div>-->
-    <!--Header Section-->
+    <!--Header Section--> 
     <header class="header">
         <h1 class="header__h1">Let's Code Together! .... Online Style ....</h1>
     </header>
     <main>
-        <div class="doc language-css" id="doc"></div>
+    <div id=viewerPanes>
+        <div class="paneContainer">
+            <h3>Collaborative Document</h3> 
+            <div class="doc language-css" id="doc"></div>
+        </div>
+        <div class="paneContainer">
+            <h3>Render View</h3>
+            <div id="codeRendered"></div>
+        </div>
+    </div>
+    <div id="interact"> 
         <pre><code id="temp"></code></pre>
+        <div id="chatBox">
+            
+        </div>
+    </div>
+       
     </main>
     <script>
         // hljs.initHighlightingOnLoad();
         hljs.configure({
-            languages: ["css"]
+            languages: ["css", "html"]
         })
         const temp1 = document.getElementById('temp');
         document.getElementById('doc').addEventListener("keydown", function(e) {
             window.setTimeout(function() {
                 var codetext = e.target.innerText;
-                //console.log(codetext);
                 var code = hljs.highlight("css", codetext).value;
                 var fCode = hljs.fixMarkup(code);
                 temp1.innerHTML = code;
             }, 100)
 
-        })
+        });
+        const rendered = document.getElementById('codeRendered');
+        const doc = document.getElementById('doc');
+        const code = doc.childNodes[0];
+        const config = {childList: true, charaterData: true, subtree: true};
+
+        const callBack = function(items, observer){
+            for(let item of items){
+                if(item.type === 'childList' || item.type === 'characterData' || item.type === 'subtree'){
+                    rendered.innerHTML = doc.innerText;                    
+                }
+            }
+        }
+
+        const observer = new MutationObserver(callBack);
+        observer.observe(doc, config);
+        document.getElementById('doc').addEventListener('keyup', function(e){
+           rendered.innerHTML = e.target.innerText;
+        });
+
     </script>
     <script src="JS/pusher-app.js"></script>
 </body>
 <footer>
-    <p>&copy; Community Code | Email to: <a href="mailto:codecommunity20@gmail.com">Community Code</a>| Tagline: "Let's Code Together!!"</p>
+    <p class="footer">&copy; Community Code | Email to: <a href="mailto:codecommunity20@gmail.com">Community Code</a>| Tagline: "Let's Code Together!!"</p>
 </footer>
 
 </html>
